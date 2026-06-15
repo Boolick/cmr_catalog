@@ -1,96 +1,311 @@
 # CRM Test Task (CMS_test)
 
-A React + TypeScript CRM-platform frontend built as a test application based on job requirements. It showcases modern frontend engineering practices, featuring a strict Feature-Sliced Design (FSD) architecture, a dense Ant Design-inspired MUI v6 design system, client-side data fetching with Zod schema validation, and global state management using MobX.
+Фронтенд-приложение для CRM-платформы на базе React 18, TypeScript и Vite. Разработано в качестве тестового задания для демонстрации современных подходов к веб-разработке: строгой архитектуры Feature-Sliced Design (FSD), плотной сетки и кастомного дизайна в стиле Ant Design на базе MUI v6, валидации API-данных на стороне клиента с помощью Zod и гибридного управления состоянием (TanStack Query для серверных данных + MobX для интерфейса).
+
+## Содержание
+- [Ключевые особенности](#ключевые-особенности)
+- [Стек технологий](#стек-технологий)
+- [Требования к окружению](#требования-к-окружению)
+- [Начало работы](#начало-работы)
+- [Архитектура приложения](#архитектура-приложения)
+  - [Структура папок (FSD)](#структура-папок-fsd)
+  - [Жизненный цикл данных и потоки (Data Flow)](#жизненный цикл-данных-и-потоки-data-flow)
+  - [Схемы данных (Zod Contract)](#схемы-данных-zod-contract)
+- [Переменные окружения](#переменные-окружения)
+- [Доступные скрипты](#доступные-скрипты)
+- [Тестирование](#тестирование)
+- [Развертывание (Deployment)](#развертывание-deployment)
+  - [Docker-сборка (Nginx SPA)](#docker-сборка-nginx-spa)
+  - [Статический хостинг (Vercel / Netlify / GitHub Pages)](#статический-хостинг-vercel--netlify--github-pages)
+- [Устранение неполадок (Troubleshooting)](#устранение-неполадок-troubleshooting)
 
 ---
 
-## 🛠 Tech Stack
+## Ключевые особенности
 
-- **Framework:** React 18 + TypeScript + Vite
-- **Global State Management:** MobX + `mobx-react-lite`
-- **Component Styling & Theme:** Material UI (MUI v6) + Emotion
-- **Data Fetching:** TanStack React Query (v5)
-- **Data Validation:** Zod
+*   **Архитектурный паттерн FSD:** Четкое разделение ответственности между слоями, отсутствие круговых зависимостей, масштабируемость.
+*   **Гибридный State Management:** 
+    *   **TanStack Query (React Query) v5** отвечает за асинхронные сетевые запросы, автоматическое кеширование и синхронизацию данных с сервером.
+    *   **MobX v6** управляет локальным UI-состоянием (активная тема, фильтры DataGrid, параметры сортировки).
+*   **Безопасный парсинг данных (Zod):** Строгая валидация входящих API-структур на соответствие CRM-контракту в рантайме.
+*   **Кастомная визуализация (MUI v6):** Адаптированный плоский дизайн в стиле Ant Design (базовый шрифт 14px, радиус скруглений 6px, отсутствие лишних теней и фокусных обводок).
+*   **Интерактивный UI с DataGrid:**
+    *   Полноценный тулбар с фильтрами, выбором колонок и экспортом данных в формате CSV.
+    *   Сохранение фильтрации и сортировки в `localStorage`.
+    *   Модальное окно для полноэкранного просмотра аватара (без срабатывания клика по строке таблицы).
+    *   Модальное окно детального просмотра лида/товара при клике по строке таблицы.
 
 ---
 
-## 📐 Architecture: Feature-Sliced Design (FSD)
+## Стек технологий
 
-The project strictly follows the **Feature-Sliced Design (FSD)** architectural pattern to ensure modularity, scalability, and loose coupling.
+*   **UI-Библиотека:** React 19 + TypeScript
+*   **Сборщик проекта:** Vite 8
+*   **Стилизация и компоненты:** Material UI (MUI v6) + Emotion
+*   **Стейт-менеджер (UI):** MobX 6 + `mobx-react-lite` (для связывания с React-компонентами)
+*   **Стейт-менеджер (Server State):** TanStack React Query v5
+*   **Валидация схем:** Zod 4
+*   **Тестирование:** Vitest 4
 
+---
+
+## Требования к окружению
+
+Для запуска приложения на локальной машине необходимы следующие инструменты:
+
+*   **Node.js**: Версия 18.x или выше (рекомендуется LTS 20.x+)
+*   **Менеджер пакетов**: npm (поставляется с Node.js) или pnpm / yarn
+
+---
+
+## Начало работы
+
+Выполните следующие шаги для локального запуска проекта на своей системе:
+
+### 1. Клонирование репозитория
+
+```bash
+git clone <url-репозитория>
+cd CMS_test
 ```
-src/
-├── app/              # App providers, entry point, global styles/store wrappers
-│   ├── providers/    # AppProviders (MUI Theme, React Query, MobX Store context)
-│   ├── store/        # MobX UIStore class, provider Context, and singleton store
-│   ├── App.tsx       # Root React component composing the MainPage
-│   └── main.tsx      # Main application mounting script
-│
-├── pages/            # Page components composed from widgets and features
-│   └── MainPage/     # Main dashboard layout
-│
-├── widgets/          # Multi-functional block compositions of features and entities
-│   └── ItemsTable/   # CRM Items DataGrid widget (with modal integrations)
-│
-├── features/         # User actions with business value
-│   └── theme/        # ThemeSwitcher component (light/dark mode toggle)
-│
-├── entities/         # Business-logic modules (data models, hooks, schemas)
-│   └── item/         # Product catalog item entity
-│       ├── api/      # fetchItems API call fetching from dummyjson.com
-│       ├── hooks/    # useGetItems react-query hook wrapper
-│       └── model/    # Zod itemSchema declaration, Item types, mock database
-│
-└── shared/           # Reusable utilities, themes, hooks, assets
-    └── theme/        # Dense theme definitions overriding MUI Button & DataGrid
-```
 
----
+### 2. Установка зависимостей
 
-## 📦 Key Implementation Decisions
-
-### 1. Global State Management (MobX)
-- A global `uiStore` class managed by MobX keeps track of the active `themeMode` (`'light' | 'dark'`), `filterModel`, and `sortModel` for the table.
-- Direct **two-way controlled state bindings** exist between the MUI `DataGrid` and the MobX `uiStore`, making the table highly interactive.
-- Persistent state is fully maintained via automated `autorun` sync writeups to `localStorage`, so filters and themes survive page reloads.
-- Server-Side Rendering (SSR) and test environment guards (`typeof localStorage === 'undefined'`) are implemented in the store module to prevent crashes.
-
-### 2. Runtime Data Validation (Zod + API Integration)
-- The application implements **Parse, Don't Validate** logic:
-  - Fetches product listings from the live API: `https://dummyjson.com/products?limit=20`.
-  - Maps API structures dynamically to comply with the local CRM data contract.
-  - Safely parses and validates the array payload at runtime via Zod's `itemSchema.strict()` schema before presenting it to the views.
-
-### 3. Compact Ant Design-inspired MUI Theme
-- Customized typography setting a base font-size of `14px` and Outfit font headings.
-- Overrides component styling on `MuiButton` (removed drop shadows, disabled uppercase conversions, and set border-radius to `6px`).
-- Configures custom styling on `MuiDataGrid` (removed default outer borders, customized column header background, and removed cell focus outlines) for a dense, flat table design.
-- Implements `ThemeColorSchemeSync` to automatically bridge updates from the MobX `themeMode` into the MUI CSS variables scheme.
-
-### 4. Interactive UX & Modals
-- Clicking on a product's avatar renders the image in full size via `ImageModal` without selecting the table row, thanks to `e.stopPropagation()`.
-- Clicking on a table row opens a detailed `RowInfoModal` presenting a beautiful cards-based layout of all specific product properties.
-
----
-
-## 🚀 Running the Project
-
-### Installation
 ```bash
 npm install
 ```
 
-### Run Dev Server
+### 3. Настройка переменных окружения
+
+Скопируйте демонстрационный файл конфигурации окружения:
+
+```bash
+cp .env.example .env
+```
+
+По умолчанию переменная `VITE_API_URL` настроена на работу с публичным API:
+```env
+VITE_API_URL=https://dummyjson.com
+```
+
+### 4. Запуск сервера разработки
+
 ```bash
 npm run dev
 ```
 
-### Run Unit Tests
+После запуска приложение будет доступно по адресу [http://localhost:5173](http://localhost:5173).
+
+---
+
+## Архитектура приложения
+
+### Структура папок (FSD)
+
+Проект спроектирован по методологии **Feature-Sliced Design (FSD)**:
+
+```
+src/
+├── app/                  # Инициализация приложения, глобальные провайдеры и стили
+│   ├── providers/        # Объединение контекстов (QueryProvider, ThemeProvider, StoreProvider)
+│   ├── App.tsx           # Корневой компонент
+│   └── main.tsx          # Точка входа в React-приложение
+│
+├── pages/                # Страницы приложения (компоновка виджетов)
+│   └── MainPage/         # Главная страница CRM-дашборда
+│
+├── widgets/              # Крупные самостоятельные блоки интерфейса
+│   └── ItemsTable/       # Интерактивная таблица DataGrid с модальными окнами
+│       └── ui/           # ItemsTable.tsx, ImageModal.tsx, RowInfoModal.tsx
+│
+├── features/             # Пользовательские действия с бизнес-ценностью
+│   └── theme/            # Кнопка переключения темы ThemeSwitcher
+│
+├── entities/             # Бизнес-сущности (модели данных, хуки запросов, API-слой)
+│   └── item/             # Сущность элемента CRM (продукта)
+│       ├── api/          # fetchItems.ts (запрос к dummyjson)
+│       ├── hooks/        # useGetItems.ts (обертка над useQuery)
+│       └── model/        # schema.ts (Zod-схема валидации и TS-типы)
+│
+└── shared/               # Переиспользуемые утилиты, общие стили и базовые настройки
+    ├── store/            # MobX uiStore, StoreProvider для шеринга глобального UI-состояния
+    └── theme/            # Конфигурация кастомной темы MUI (Ant Design-like)
+```
+
+### Жизненный цикл данных и потоки (Data Flow)
+
+Ниже представлена схема взаимодействия компонентов, стейт-менеджеров и API при рендеринге таблицы CRM:
+
+```
+[Внешний API (dummyjson)]
+          │
+          ▼ (fetch)
+[entities/item/api/fetchItems.ts] ──► Валидация через Zod [schema.ts]
+          │
+          ▼ (Проверенные данные)
+[TanStack Query (Кэш: 'items')]
+          │
+          ▼ (useGetItems)
+[Компонент ItemsTable (React)] ◄──► [MobX Store (uiStore)] ◄──► [localStorage]
+          │                                  │
+          │                                  ▼ (themeMode)
+          │                      [ThemeProvider (MUI Theme Sync)]
+          │
+          ├─► Клик по строке ──► [RowInfoModal]
+          └─► Клик по аватарке ──► [ImageModal]
+```
+
+1.  **Запрос данных**: Виджет `ItemsTable` использует React-хук `useGetItems()`. Хук обращается к кэшу TanStack Query. Если данных в кэше нет или они устарели, вызывается API-функция `fetchItems`.
+2.  **Валидация и Маппинг**: Функция `fetchItems` запрашивает данные с адреса, указанного в переменной `VITE_API_URL` (например, `https://dummyjson.com/products`). Полученный массив мапится под плоский CRM-формат и валидируется строгой схемой `itemSchema.strict()` библиотеки Zod. При несовпадении типов выбрасывается ошибка парсинга.
+3.  **UI-Состояние**:
+    *   Выбранные пользователем фильтры (`filterModel`) и сортировки (`sortModel`) таблицы MUI `DataGrid` передаются напрямую в MobX `uiStore`.
+    *   При обновлении фильтров или сортировок MobX автоматически вызывает реакцию `autorun` и перезаписывает новые значения в `localStorage`.
+    *   При следующем заходе на страницу `uiStore` считывает настройки фильтрации из `localStorage` и применяет их к таблице.
+4.  **Синхронизация тем**:
+    *   При клике на `ThemeSwitcher` вызывается экшен `uiStore.toggleThemeMode()`.
+    *   Изменение реактивного свойства `uiStore.themeMode` отслеживается компонентом `ThemeColorSchemeSync` (обернут в MobX `observer` в файле `ThemeProvider.tsx`).
+    *   Компонент-наблюдатель вызывает `setMode(uiStore.themeMode)` для переключения темы на уровне переменных CSS в Material UI.
+
+### Схемы данных (Zod Contract)
+
+Контракт элемента CRM описывается Zod-схемой `itemSchema` в файле `src/entities/item/model/schema.ts`:
+
+```typescript
+import { z } from 'zod';
+
+export const itemSchema = z.object({
+  id: z.string(),              // Приводится к строке из ID продукта API
+  avatar: z.string().url(),    // Ссылка на превью (thumbnail)
+  title: z.string(),           // Название товара / лида
+  description: z.string(),     // Детальное описание
+  createdAt: z.string(),       // Дата создания (формат ISO-8601)
+  score: z.number(),           // Рейтинг элемента (рейтинг товара)
+}).strict(); // Запрещает любые посторонние поля во избежание утечки лишних данных
+```
+
+---
+
+## Переменные окружения
+
+Проект использует встроенный в Vite механизм управления переменными окружения. Все клиентские переменные должны начинаться с префикса `VITE_`.
+
+| Имя переменной | Тип | Значение по умолчанию | Описание |
+| :--- | :--- | :--- | :--- |
+| `VITE_API_URL` | String | `https://dummyjson.com` | Базовый URL-адрес внешнего API для загрузки продуктов/лидов |
+
+---
+
+## Доступные скрипты
+
+В проекте настроены следующие npm-скрипты:
+
+| Скрипт | Команда | Описание |
+| :--- | :--- | :--- |
+| `npm run dev` | `vite` | Запуск локального сервера разработки с поддержкой Hot Module Replacement (HMR) |
+| `npm run build` | `tsc -b && vite build` | Проверка типов TS и сборка оптимизированных статических файлов для продакшна в папку `dist` |
+| `npm run lint` | `eslint .` | Проверка кодовой базы линтером ESLint по правилам проекта |
+| `npm run preview` | `vite preview` | Локальный запуск сервера для предпросмотра собранного продакшн-бандла |
+| `npm run test` | `vitest run` | Запуск тестового фреймворка Vitest для выполнения unit-тестов в однократном режиме |
+
+---
+
+## Тестирование
+
+Тесты написаны с использованием библиотеки **Vitest**. Они проверяют базовую работоспособность приложения, инстанцирование компонентов и целостность логики провайдеров.
+
+### Запуск тестов
+
+Выполните команду для однократного запуска тестов:
 ```bash
 npm run test
 ```
 
-### Build Production Bundle
+Для запуска тестов в режиме наблюдения (watch mode) используйте:
 ```bash
-npm run build
+npx vitest
 ```
+
+### Пример Unit-теста ([App.test.tsx](file:///g:/projects/CMS_test/src/app/App.test.tsx))
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import React from 'react';
+import App from './App';
+
+describe('App Component Instantiation', () => {
+  it('instantiates successfully as a React element', () => {
+    const element = React.createElement(App);
+    expect(element).toBeDefined();
+    expect(element.type).toBe(App);
+  });
+});
+```
+
+---
+
+## Развертывание (Deployment)
+
+Собранное SPA-приложение представляет собой набор статических файлов (`html`, `js`, `css`, картинки) и не требует Node.js среды исполнения на продакшн-сервере.
+
+### Docker-сборка (Nginx SPA)
+
+Для деплоя через Docker-контейнер создайте `Dockerfile` в корне проекта:
+
+```dockerfile
+# Сборка приложения
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Запуск на Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+# Копируем конфиг Nginx для корректной работы SPA роутинга
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Содержимое вспомогательного файла `nginx.conf`:
+```nginx
+server {
+    listen 80;
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+Сборка и запуск контейнера:
+```bash
+docker build -t crm-frontend .
+docker run -p 8080:80 -e VITE_API_URL=https://dummyjson.com crm-frontend
+```
+
+### Статический хостинг (Vercel / Netlify / GitHub Pages)
+
+1.  **Vercel / Netlify**: Подключите репозиторий к панели управления сервиса. Конфигурация сборки определится автоматически:
+    *   **Build Command:** `npm run build`
+    *   **Output Directory:** `dist`
+2.  **GitHub Pages**: Для деплоя на GH Pages необходимо установить пакет `gh-pages` и добавить опцию `base` в `vite.config.ts`, указав имя репозитория.
+
+---
+
+## Устранение неполадок (Troubleshooting)
+
+### 1. Ошибка "Failed to fetch items from dummyjson API"
+*   **Причина:** Отсутствует интернет-соединение или адрес API недоступен.
+*   **Решение:** Проверьте доступность домена `https://dummyjson.com` в браузере или настройте альтернативный URL в `.env` (переменная `VITE_API_URL`).
+
+### 2. Сброс фильтров или темы после перезапуска страницы
+*   **Причина:** Браузер заблокировал доступ к `localStorage` (например, включен режим инкогнито с жесткими ограничениями) или произошла ошибка парсинга сохраненных данных.
+*   **Решение:** Проверьте консоль разработчика на наличие ошибок JSON-парсинга. При необходимости очистите локальное хранилище командой `localStorage.clear()` в консоли браузера.
+
+### 3. Ошибки типизации при работе с `import.meta.env`
+*   **Причина:** Отсутствуют типы Vite в конфигурации TypeScript.
+*   **Решение:** Убедитесь, что в файле `tsconfig.app.json` в секции `"types"` указан пакет `"vite/client"`, который отвечает за типизацию переменных окружения.

@@ -1,14 +1,30 @@
-import { z } from 'zod';
-import { itemSchema, type Item } from '../model/schema';
+import { z } from "zod";
+import { itemSchema, type Item } from "../model/schema";
+
+interface DummyJsonProduct {
+  id: number | string;
+  thumbnail: string;
+  title: string;
+  description: string;
+  meta?: {
+    createdAt?: string;
+  };
+  rating: number;
+}
+
+interface DummyJsonResponse {
+  products?: DummyJsonProduct[];
+}
 
 export async function fetchItems(): Promise<Item[]> {
-  const response = await fetch('https://dummyjson.com/products?limit=20');
+  const baseUrl = import.meta.env.VITE_API_URL || "https://dummyjson.com";
+  const response = await fetch(`${baseUrl}/products?limit=100`);
   if (!response.ok) {
-    throw new Error('Failed to fetch items from dummyjson API');
+    throw new Error("Failed to fetch items from dummyjson API");
   }
-  const data = await response.json();
-  
-  const mappedItems = (data.products || []).map((product: any) => ({
+  const data = (await response.json()) as DummyJsonResponse;
+
+  const mappedItems = (data.products || []).map((product) => ({
     id: String(product.id),
     avatar: product.thumbnail,
     title: product.title,

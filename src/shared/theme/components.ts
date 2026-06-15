@@ -33,18 +33,29 @@ export const components: Components<Theme> = {
         },
       },
       outlined: ({ theme }) => ({
-        borderColor: theme.palette.mode === 'light' ? '#d9d9d9' : '#434343',
-        color: theme.palette.text.primary,
+        borderColor: '#d9d9d9',
+        color: theme.vars!.palette.text.primary,
         '&:hover': {
-          borderColor: theme.palette.primary.main,
-          backgroundColor: theme.palette.mode === 'light' ? 'rgba(22, 119, 255, 0.04)' : 'rgba(23, 125, 220, 0.08)',
-          color: theme.palette.primary.main,
+          borderColor: theme.vars!.palette.primary.main,
+          backgroundColor: 'rgba(22, 119, 255, 0.04)',
+          color: theme.vars!.palette.primary.main,
         },
+        ...theme.applyStyles('dark', {
+          borderColor: '#434343',
+          '&:hover': {
+            backgroundColor: 'rgba(23, 125, 220, 0.08)',
+          },
+        }),
       }),
       text: ({ theme }) => ({
         '&:hover': {
-          backgroundColor: theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)',
+          backgroundColor: 'rgba(0, 0, 0, 0.04)',
         },
+        ...theme.applyStyles('dark', {
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.04)',
+          },
+        }),
       }),
       sizeSmall: {
         padding: '4px 10px',
@@ -66,22 +77,30 @@ export const components: Components<Theme> = {
         border: 'none',
         '& .MuiDataGrid-cell': {
           borderRight: 'none',
-          borderColor: theme.palette.divider,
+          borderColor: theme.vars!.palette.divider,
         },
         '& .MuiDataGrid-columnHeader': {
           borderRight: 'none',
         },
         '& .MuiDataGrid-columnHeaders': {
-          backgroundColor: theme.palette.mode === 'light' ? '#fafafa' : '#1d1d1d',
-          borderColor: theme.palette.divider,
+          backgroundColor: '#fafafa',
+          borderColor: theme.vars!.palette.divider,
         },
         '& .MuiDataGrid-row:hover': {
-          backgroundColor: theme.palette.mode === 'light' ? '#f5f5f5' : '#1a1a1a',
+          backgroundColor: '#f5f5f5',
         },
         '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within, & .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
           outline: 'none',
           boxShadow: 'none',
         },
+        ...theme.applyStyles('dark', {
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#1d1d1d',
+          },
+          '& .MuiDataGrid-row:hover': {
+            backgroundColor: '#1a1a1a',
+          },
+        }),
       }),
     },
   },
@@ -97,8 +116,8 @@ export const components: Components<Theme> = {
       body: {
         fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
         fontSize: '14px',
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
+        backgroundColor: theme.vars!.palette.background.default,
+        color: theme.vars!.palette.text.primary,
         margin: 0,
         WebkitFontSmoothing: 'antialiased',
         MozOsxFontSmoothing: 'grayscale',
@@ -107,7 +126,7 @@ export const components: Components<Theme> = {
         fontFamily: 'Outfit, sans-serif',
         fontWeight: 600,
         marginTop: 0,
-        color: theme.palette.text.primary,
+        color: theme.vars!.palette.text.primary,
       },
       h1: { marginBottom: '12px' },
       h2: { marginBottom: '12px' },

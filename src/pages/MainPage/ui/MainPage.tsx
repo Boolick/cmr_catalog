@@ -30,10 +30,10 @@ export const MainPage: React.FC = () => {
       <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4, display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" gutterBottom>
-            Product Catalog
+            Lead Catalog
           </Typography>
           <Typography variant="body1" color="textSecondary">
-            Manage and view the catalog items fetched from the live dummyjson API. Sorting and filtering models are persisted globally using MobX.
+            Manage CRM-like records fetched from a public API. Sorting, filtering and theme preferences are persisted globally using MobX.
           </Typography>
         </Box>
         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', borderRadius: '6px', overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>

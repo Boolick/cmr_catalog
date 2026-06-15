@@ -19,17 +19,18 @@ export const ItemsTable: React.FC = observer(() => {
   const columns = useMemo<GridColDef[]>(() => [
     {
       field: 'avatar',
-      headerName: 'Avatar',
+      headerName: 'Preview',
       width: 80,
       sortable: false,
       filterable: false,
+      disableExport: true,
       renderCell: (params) => {
         const src = params.value;
         return (
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
             <Avatar
               src={src}
-              alt={params.row.title || 'Avatar'}
+              alt={params.row.title || 'Preview'}
               onClick={(e) => {
                 // Prevent row selection when clicking the avatar image
                 e.stopPropagation();
@@ -45,7 +46,7 @@ export const ItemsTable: React.FC = observer(() => {
     },
     {
       field: 'title',
-      headerName: 'Title',
+      headerName: 'Lead / Item',
       flex: 1,
       minWidth: 150,
       renderCell: (params) => (
@@ -69,6 +70,7 @@ export const ItemsTable: React.FC = observer(() => {
             whiteSpace: 'normal',
             wordBreak: 'break-word',
             py: 1,
+            overflowY: 'auto',
           }}
         >
           {params.value}
@@ -79,20 +81,32 @@ export const ItemsTable: React.FC = observer(() => {
       field: 'createdAt',
       headerName: 'Created At',
       width: 180,
-      valueFormatter: (value) => {
+      renderCell: (params) => {
+        const value = params.value;
         if (!value) return '';
+        let formatted = '';
         try {
-          return new Date(value).toLocaleString();
+          formatted = new Date(value).toLocaleString();
         } catch {
-          return String(value);
+          formatted = String(value);
         }
+        return (
+          <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            {formatted}
+          </Box>
+        );
       },
     },
     {
       field: 'score',
-      headerName: 'Score',
-      width: 100,
+      headerName: 'Rating',
+      width: 150,
       type: 'number',
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%', height: '100%' }}>
+          {params.value}
+        </Box>
+      ),
     },
   ], []);
 
@@ -108,6 +122,17 @@ export const ItemsTable: React.FC = observer(() => {
         sortModel={uiStore.sortModel}
         onSortModelChange={(model) => uiStore.setSortModel(model)}
         onRowClick={(params) => setSelectedItem(params.row as Item)}
+        showToolbar
+        slotProps={{
+          toolbar: {
+            csvOptions: {
+              fileName: 'crm-dashboard',
+              delimiter: ';',
+              utf8WithBom: true,
+              fields: ['title', 'description', 'createdAt', 'score'],
+            },
+          },
+        }}
         sx={{
           '& .MuiDataGrid-row': {
             minHeight: '100px !important',
@@ -120,7 +145,7 @@ export const ItemsTable: React.FC = observer(() => {
         open={!!selectedImageUrl}
         onClose={() => setSelectedImageUrl(null)}
         imageUrl={selectedImageUrl || ''}
-        title="Avatar Preview"
+        title="Lead Preview"
       />
       <RowInfoModal
         open={!!selectedItem}

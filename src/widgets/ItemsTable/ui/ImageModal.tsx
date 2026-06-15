@@ -15,7 +15,7 @@ interface ImageModalProps {
 export const ImageModal: React.FC<ImageModalProps> = ({ open, onClose, imageUrl, title }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" scroll="body">
-      <Box position="relative">
+      <Box sx={{ position: 'relative' }}>
         <IconButton
           onClick={onClose}
           sx={{

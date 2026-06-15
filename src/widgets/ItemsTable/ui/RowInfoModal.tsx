@@ -20,7 +20,7 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Item Details</DialogTitle>
+      <DialogTitle>Lead / Item Details</DialogTitle>
       <DialogContent dividers sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
           <Avatar
@@ -57,9 +57,9 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
             </Box>
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="subtitle2" color="textSecondary">
-                Score
+                Lead Score / Rating
               </Typography>
-              <Typography variant="body1" fontWeight="bold">
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                 {item.score}
               </Typography>
             </Box>
