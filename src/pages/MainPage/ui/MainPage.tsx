@@ -28,7 +28,7 @@ export const MainPage: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4, display: 'flex', flexDirection: 'column' }}>
-        <Box mb={3}>
+        <Box sx={{ mb: 3 }}>
           <Typography variant="h4" gutterBottom>
             Product Catalog
           </Typography>

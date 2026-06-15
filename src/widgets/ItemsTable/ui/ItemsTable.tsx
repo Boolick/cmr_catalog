@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import { observer } from 'mobx-react-lite';
 import { useUIStore } from '../../../app/store';
 import { useGetItems } from '../../../entities/item/hooks/useGetItems';
-import { Item } from '../../../entities/item/model/schema';
+import type { Item } from '../../../entities/item/model/schema';
 import { ImageModal } from './ImageModal';
 import { RowInfoModal } from './RowInfoModal';
 
@@ -25,7 +26,7 @@ export const ItemsTable: React.FC = observer(() => {
       renderCell: (params) => {
         const src = params.value;
         return (
-          <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
             <Avatar
               src={src}
               alt={params.row.title || 'Avatar'}
@@ -48,7 +49,7 @@ export const ItemsTable: React.FC = observer(() => {
       flex: 1,
       minWidth: 150,
       renderCell: (params) => (
-        <Box fontWeight="bold" display="flex" alignItems="center" height="100%">
+        <Box sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', height: '100%' }}>
           {params.value}
         </Box>
       ),
@@ -60,11 +61,15 @@ export const ItemsTable: React.FC = observer(() => {
       minWidth: 250,
       renderCell: (params) => (
         <Box
-          fontStyle="italic"
-          display="flex"
-          alignItems="center"
-          height="100%"
-          sx={{ whiteSpace: 'normal', wordBreak: 'break-word', py: 1 }}
+          sx={{
+            fontStyle: 'italic',
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            whiteSpace: 'normal',
+            wordBreak: 'break-word',
+            py: 1,
+          }}
         >
           {params.value}
         </Box>

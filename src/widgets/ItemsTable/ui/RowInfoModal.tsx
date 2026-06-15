@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Item } from '../../../entities/item/model/schema';
+import type { Item } from '../../../entities/item/model/schema';
 
 interface RowInfoModalProps {
   open: boolean;
@@ -22,7 +22,7 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Item Details</DialogTitle>
       <DialogContent dividers sx={{ p: 3 }}>
-        <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
           <Avatar
             src={item.avatar}
             alt={item.title}
@@ -36,7 +36,7 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
           </Typography>
         </Box>
 
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Box>
             <Typography variant="subtitle2" color="textSecondary">
               Description
@@ -46,7 +46,7 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
             </Typography>
           </Box>
           
-          <Box display="flex" justifyContent="space-between" mt={1}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
             <Box>
               <Typography variant="subtitle2" color="textSecondary">
                 Created At
@@ -55,7 +55,7 @@ export const RowInfoModal: React.FC<RowInfoModalProps> = ({ open, onClose, item 
                 {new Date(item.createdAt).toLocaleString()}
               </Typography>
             </Box>
-            <Box textAlign="right">
+            <Box sx={{ textAlign: 'right' }}>
               <Typography variant="subtitle2" color="textSecondary">
                 Score
               </Typography>
