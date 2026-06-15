@@ -1,6 +1,4 @@
-import { TypographyOptions } from '@mui/material/styles/createTypography';
-
-export const typography: TypographyOptions = {
+export const typography = {
   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
   fontSize: 14,
   htmlFontSize: 16,

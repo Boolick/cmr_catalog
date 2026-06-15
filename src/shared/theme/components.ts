@@ -1,5 +1,5 @@
 import type {} from '@mui/x-data-grid/themeAugmentation';
-import { Components, Theme } from '@mui/material/styles';
+import type { Components, Theme } from '@mui/material/styles';
 
 export const components: Components<Theme> = {
   MuiButton: {
