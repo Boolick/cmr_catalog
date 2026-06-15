@@ -4,9 +4,9 @@ import type { GridColDef } from '@mui/x-data-grid';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import { observer } from 'mobx-react-lite';
-import { useUIStore } from '../../../app/store';
-import { useGetItems } from '../../../entities/item/hooks/useGetItems';
-import type { Item } from '../../../entities/item/model/schema';
+import { useUIStore } from '../../../shared/store';
+import { useGetItems } from '../../../entities/item';
+import type { Item } from '../../../entities/item';
 import { ImageModal } from './ImageModal';
 import { RowInfoModal } from './RowInfoModal';
 

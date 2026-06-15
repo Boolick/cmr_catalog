@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import IconButton from '@mui/material/IconButton';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { useUIStore } from '../../app/store';
+import { useUIStore } from '../../shared/store';
 
 export const ThemeSwitcher: React.FC = observer(() => {
   const uiStore = useUIStore();

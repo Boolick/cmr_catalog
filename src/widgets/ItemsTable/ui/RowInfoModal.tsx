@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import type { Item } from '../../../entities/item/model/schema';
+import type { Item } from '../../../entities/item';
 
 interface RowInfoModalProps {
   open: boolean;

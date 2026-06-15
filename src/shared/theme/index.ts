@@ -18,5 +18,3 @@ export const theme = createTheme({
   typography,
   components,
 });
-
-export default theme;
